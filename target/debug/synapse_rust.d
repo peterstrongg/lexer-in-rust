@@ -1,0 +1,1 @@
+/home/peter/dev/synapse/target/debug/synapse_rust: /home/peter/dev/synapse/src/main.rs /home/peter/dev/synapse/src/utils/mod.rs /home/peter/dev/synapse/src/utils/scanner.rs /home/peter/dev/synapse/src/utils/token.rs
