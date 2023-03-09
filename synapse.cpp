@@ -21,8 +21,8 @@ int main(int argc, char *argv[]) {
 }
 
 std::string read_file(std::string file_name) {
-    char ch;
-    std::string src;
+    char ch; std::string src;
+    
     std::ifstream file(file_name, std::ios::in);
 
     if(file.fail()) {
