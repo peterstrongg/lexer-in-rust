@@ -1,3 +1,5 @@
+#include <string>
+
 #ifndef TOKEN_H
 #define TOKEN_H
 
@@ -16,10 +18,13 @@ enum TokenValue {
 
 class Token {
     public:
-        Token(TokenValue t, char* l);
+        Token(TokenValue t, std::string l, int ln);
+        
     private:
         TokenValue token;
         std::string lexeme;
+        int line;
 };
 
 #endif
+

@@ -1,9 +1,17 @@
+#include <string>
+#include <vector>
+#include "Token.h"
+
 #ifndef SCANNER_H
 #define SCANNER_H
 
 class Scanner {
     public:
-        Scanner();
+        Scanner(std::string source);
+    
+    private:
+        std::string source;
+        std::vector<Token> tokens;
 };
 
 #endif

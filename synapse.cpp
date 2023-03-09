@@ -4,9 +4,7 @@
 #include <string>
 #include "Scanner.h"
 
-using namespace std;
-
-ifstream open_file(string);
+std::string read_file(std::string file_name);
 
 int main(int argc, char *argv[]) {
     if(argc > 2) {
@@ -16,21 +14,29 @@ int main(int argc, char *argv[]) {
         // Enter repl
         exit(1);    
     }
+    
+    Scanner scanner(read_file(argv[1]));
 
-    ifstream file = open_file(argv[1]);
-
-    Scanner a;
     return 0;
 }
 
-ifstream open_file(string file_name) {
-    ifstream f;
-    f.open(file_name);
+std::string read_file(std::string file_name) {
+    char ch;
+    std::string src;
+    std::ifstream file(file_name, std::ios::in);
 
-    if(f.fail()) {
+    if(file.fail()) {
         printf("Error opening file\n");
         exit(-1);
     }
 
-    return f;
+    while(file) {
+        if(file.get(ch)) {
+            src.push_back(ch);
+        }
+    }
+
+    file.close();
+
+    return src;
 }

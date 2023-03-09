@@ -2,8 +2,6 @@
 #include "Scanner.h"
 #include "Token.h"
 
-using namespace std;
-
-Scanner::Scanner() {
-    cout << "scanner created\n";
+Scanner::Scanner(std::string source) {
+    std::cout << "scanner created\n";
 }
