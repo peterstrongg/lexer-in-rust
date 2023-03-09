@@ -5,13 +5,14 @@
 #include "Scanner.h"
 
 std::string read_file(std::string file_name);
+void repl();
 
 int main(int argc, char *argv[]) {
     if(argc > 2) {
         printf("Usage: %s <file>\n", argv[0]);
         exit(-1);
     } else if (argc < 2) {
-        // Enter repl
+        repl();
         exit(1);    
     }
     
@@ -22,7 +23,6 @@ int main(int argc, char *argv[]) {
 
 std::string read_file(std::string file_name) {
     char ch; std::string src;
-    
     std::ifstream file(file_name, std::ios::in);
 
     if(file.fail()) {
@@ -35,8 +35,16 @@ std::string read_file(std::string file_name) {
             src.push_back(ch);
         }
     }
-
     file.close();
 
     return src;
+}
+
+void repl () {
+    std::string input;
+    printf("Synapse version 0.1 beta\n\n");
+    for(;;) {
+        printf("> ");
+        std::cin >> input;
+    }
 }

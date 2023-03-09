@@ -7,7 +7,8 @@
 
 class Scanner {
     public:
-        Scanner(std::string source);
+        Scanner(std::string src);
+        void scan_for_tokens();
     
     private:
         std::string source;
