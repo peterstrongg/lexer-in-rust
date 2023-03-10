@@ -10,18 +10,17 @@ pub enum TokenValue {
         AND, OR, IF, ELSE, WHILE, LET, CONST, TRUE, 
         FALSE, RETURN,
 
-        // Empty Token
-        NAN
+        // End of file
+        EOF,
 }
 
 pub struct Token {
     token: TokenValue,
-    literal: String,
     line: i32
 }
 
 impl Token {
-    pub fn new(token: TokenValue, literal: String, line: i32) -> Token {
-        Token { token, literal, line }
+    pub fn new(token: TokenValue, line: i32) -> Token {
+        Token { token, line }
     }
 }

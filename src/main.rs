@@ -7,12 +7,15 @@ mod utils;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+
     if args.len() > 2 {
         println!("Usage: {} <filename>", &args[0]);
         return;
     } else if args.len() < 2 {
         repl();
+        return;
     }
+
     let src: String = fs::read_to_string("test.syn")
         .expect("Error reading file");
 
@@ -21,6 +24,7 @@ fn main() {
 }
 
 fn repl() {   
+    println!("Synapse version 0.0.1\n");
     loop {
         let mut input = String::new();
         print!("> ");
