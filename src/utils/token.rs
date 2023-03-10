@@ -1,7 +1,7 @@
-enum TokenValue {
+pub enum TokenValue {
         // Single char tokens
         LEFTPAREN, RIGHTPAREN, LEFTCURLY, RIGHTCURLY,
-        DOT, COMMA, MINUS, PLUS, STAR, SEMICOLON, SLASH,
+        DOT, COMMA, MINUS, PLUS, STAR, SEMICOLON,
     
         // Literals
         NUMBER, STRING, IDENTIFIER,
@@ -9,16 +9,19 @@ enum TokenValue {
         // Keywords
         AND, OR, IF, ELSE, WHILE, LET, CONST, TRUE, 
         FALSE, RETURN,
+
+        // Empty Token
+        NAN
 }
 
 pub struct Token {
     token: TokenValue,
-    lexeme: String,
+    literal: String,
     line: i32
 }
 
 impl Token {
-    fn new(token: TokenValue, lexeme: String, line: i32) -> Token {
-        Token { token, lexeme, line }
+    pub fn new(token: TokenValue, literal: String, line: i32) -> Token {
+        Token { token, literal, line }
     }
 }

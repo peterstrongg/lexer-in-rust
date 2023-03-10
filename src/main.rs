@@ -16,7 +16,8 @@ fn main() {
     let src: String = fs::read_to_string("test.syn")
         .expect("Error reading file");
 
-    let scanner = utils::scanner::Scanner::new(src);
+    let mut scanner = utils::scanner::Scanner::new(src);
+    scanner.scan_for_tokens();
 }
 
 fn repl() {   
