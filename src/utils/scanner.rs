@@ -35,6 +35,7 @@ impl Scanner {
     fn scan_token(&mut self) {
         let ch: char = self.source.as_bytes()[self.curr as usize] as char;
         match ch {
+            // Single char tokens
             '(' => self.add_token(super::token::TokenValue::LEFTPAREN),
             ')' => self.add_token(super::token::TokenValue::RIGHTPAREN),
             '{' => self.add_token(super::token::TokenValue::LEFTCURLY),
@@ -45,8 +46,38 @@ impl Scanner {
             '+' => self.add_token(super::token::TokenValue::PLUS),
             '*' => self.add_token(super::token::TokenValue::STAR),
             ';' => self.add_token(super::token::TokenValue::SEMICOLON),
+
+            // One or two char tokens
+            '!' => {
+                if self.next_byte() == '=' {
+                    self.add_token(super::token::TokenValue::NOT_EQUAL);
+                } else {
+                    self.add_token(super::token::TokenValue::NOT);
+                }
+            },
+            '=' => {
+                if self.next_byte() == '=' {
+                    self.add_token(super::token::TokenValue::EQUAL_EQUAL);
+                } else {
+                    self.add_token(super::token::TokenValue::EQUAL);
+                }
+            },
+            '>' => {
+                if self.next_byte() == '=' {
+                    self.add_token(super::token::TokenValue::GREATER_EQUAL);
+                } else {
+                    self.add_token(super::token::TokenValue::GREATER);
+                }
+            },
+            '<' => {
+                if self.next_byte() == '=' {
+                    self.add_token(super::token::TokenValue::LESS_EQUAL);
+                } else {
+                    self.add_token(super::token::TokenValue::LESS);
+                }
+            },
             '\n' => self.line += 1,
-            _ => {}
+            '\t' | '\r' | ' ' | _ => {}
         };
         self.curr += 1;
     }
@@ -57,5 +88,9 @@ impl Scanner {
 
     fn add_token(&mut self, token: super::token::TokenValue) {
         self.tokens.push(super::token::Token::new(token, self.line));
+    }
+
+    fn next_byte(&self) -> char {
+        return self.source.as_bytes()[(self.curr + 1) as usize] as char;
     }
 }

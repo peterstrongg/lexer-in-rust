@@ -2,7 +2,11 @@ pub enum TokenValue {
         // Single char tokens
         LEFTPAREN, RIGHTPAREN, LEFTCURLY, RIGHTCURLY,
         DOT, COMMA, MINUS, PLUS, STAR, SEMICOLON,
-    
+
+        // One or two character tokens
+        NOT, NOT_EQUAL, EQUAL, LESS_EQUAL, GREATER_EQUAL, 
+        EQUAL_EQUAL, LESS, GREATER,
+
         // Literals
         NUMBER, STRING, IDENTIFIER,
     
@@ -11,7 +15,7 @@ pub enum TokenValue {
         FALSE, RETURN,
 
         // End of file
-        EOF,
+        EOF
 }
 
 pub struct Token {
