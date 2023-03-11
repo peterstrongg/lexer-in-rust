@@ -15,7 +15,7 @@ impl Default for Scanner {
             tokens: Vec::new(),
             start: 0,
             curr: 0,
-            line: 1
+            line: 1,
         }
     }
 }
@@ -79,7 +79,7 @@ impl Scanner {
                     self.add_token(token::TokenValue::LESS);
                 }
             },
-            '"' => self.get_string_contents(),
+            '"' => self.add_string_token(),
             '\n' => self.line += 1,
             '\t' | '\r' | ' ' | _ => {}
         };
@@ -110,20 +110,25 @@ impl Scanner {
         return self.source.as_bytes()[(self.curr + 1) as usize] as char;
     }
 
-    fn get_string_contents(&mut self) {
+    fn add_string_token(&mut self) {
         let mut s: String = "".to_owned();
-        
+
         while self.peek() != '"' && !self.is_at_end() {
             if self.peek() == '\n' { self.line += 1; }
             s.push(self.source.as_bytes()[(self.curr + 1) as usize] as char);
             self.next();
         }
 
-        if(self.is_at_end()) {
-            // Throw error
+        if self.is_at_end() {
+            return;
         }
 
         // Consume closing quote
         self.next();
+
+        // Add token with string literal
+        let mut t = token::Token::new(token::TokenValue::STRING, self.line);
+        t.set_str(s);
+        self.tokens.push(t);
     }
 }
