@@ -29,6 +29,7 @@ impl Scanner {
         while !self.is_at_end() {
             self.start = self.curr;
             self.scan_token();
+            self.next();
         }
 
         self.add_token(token::TokenValue::EOF);
@@ -51,48 +52,78 @@ impl Scanner {
 
             // One or two char tokens
             '!' => {
-                if self.next_byte() == '=' {
+                if self.match_next_char('=') {
                     self.add_token(token::TokenValue::NOT_EQUAL);
                 } else {
                     self.add_token(token::TokenValue::NOT);
                 }
             },
             '=' => {
-                if self.next_byte() == '=' {
+                if self.match_next_char('=') {
                     self.add_token(token::TokenValue::EQUAL_EQUAL);
                 } else {
                     self.add_token(token::TokenValue::EQUAL);
                 }
             },
             '>' => {
-                if self.next_byte() == '=' {
+                if self.match_next_char('=') {
                     self.add_token(token::TokenValue::GREATER_EQUAL);
                 } else {
                     self.add_token(token::TokenValue::GREATER);
                 }
             },
             '<' => {
-                if self.next_byte() == '=' {
+                if self.match_next_char('=') {
                     self.add_token(token::TokenValue::LESS_EQUAL);
                 } else {
                     self.add_token(token::TokenValue::LESS);
                 }
             },
+            '"' => self.get_string_contents(),
             '\n' => self.line += 1,
             '\t' | '\r' | ' ' | _ => {}
         };
-        self.curr += 1;
     }
 
     fn is_at_end(&self) -> bool { 
         return self.curr as usize >= self.source.chars().count();
     }
 
+    fn next(&mut self) {
+        self.curr += 1;
+    }
+
     fn add_token(&mut self, token: token::TokenValue) {
         self.tokens.push(token::Token::new(token, self.line));
     }
 
-    fn next_byte(&self) -> char {
+    fn match_next_char(&mut self, next: char) -> bool {
+        if (self.source.as_bytes()[(self.curr + 1) as usize] as char) == next {
+            self.next();
+            return true;
+        }
+        return false;
+    }
+
+    fn peek(&self) -> char {
+        if self.is_at_end() { return '\0'; }
         return self.source.as_bytes()[(self.curr + 1) as usize] as char;
+    }
+
+    fn get_string_contents(&mut self) {
+        let mut s: String = "".to_owned();
+        
+        while self.peek() != '"' && !self.is_at_end() {
+            if self.peek() == '\n' { self.line += 1; }
+            s.push(self.source.as_bytes()[(self.curr + 1) as usize] as char);
+            self.next();
+        }
+
+        if(self.is_at_end()) {
+            // Throw error
+        }
+
+        // Consume closing quote
+        self.next();
     }
 }
