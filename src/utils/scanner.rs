@@ -1,3 +1,5 @@
+use super::token;
+
 pub struct Scanner {
     source: String,
     tokens: Vec<super::token::Token>,
@@ -29,51 +31,51 @@ impl Scanner {
             self.scan_token();
         }
 
-        self.add_token(super::token::TokenValue::EOF);
+        self.add_token(token::TokenValue::EOF);
     }
 
     fn scan_token(&mut self) {
         let ch: char = self.source.as_bytes()[self.curr as usize] as char;
         match ch {
             // Single char tokens
-            '(' => self.add_token(super::token::TokenValue::LEFTPAREN),
-            ')' => self.add_token(super::token::TokenValue::RIGHTPAREN),
-            '{' => self.add_token(super::token::TokenValue::LEFTCURLY),
-            '}' => self.add_token(super::token::TokenValue::RIGHTCURLY),
-            '.' => self.add_token(super::token::TokenValue::DOT),
-            ',' => self.add_token(super::token::TokenValue::COMMA),
-            '-' => self.add_token(super::token::TokenValue::MINUS),
-            '+' => self.add_token(super::token::TokenValue::PLUS),
-            '*' => self.add_token(super::token::TokenValue::STAR),
-            ';' => self.add_token(super::token::TokenValue::SEMICOLON),
+            '(' => self.add_token(token::TokenValue::LEFTPAREN),
+            ')' => self.add_token(token::TokenValue::RIGHTPAREN),
+            '{' => self.add_token(token::TokenValue::LEFTCURLY),
+            '}' => self.add_token(token::TokenValue::RIGHTCURLY),
+            '.' => self.add_token(token::TokenValue::DOT),
+            ',' => self.add_token(token::TokenValue::COMMA),
+            '-' => self.add_token(token::TokenValue::MINUS),
+            '+' => self.add_token(token::TokenValue::PLUS),
+            '*' => self.add_token(token::TokenValue::STAR),
+            ';' => self.add_token(token::TokenValue::SEMICOLON),
 
             // One or two char tokens
             '!' => {
                 if self.next_byte() == '=' {
-                    self.add_token(super::token::TokenValue::NOT_EQUAL);
+                    self.add_token(token::TokenValue::NOT_EQUAL);
                 } else {
-                    self.add_token(super::token::TokenValue::NOT);
+                    self.add_token(token::TokenValue::NOT);
                 }
             },
             '=' => {
                 if self.next_byte() == '=' {
-                    self.add_token(super::token::TokenValue::EQUAL_EQUAL);
+                    self.add_token(token::TokenValue::EQUAL_EQUAL);
                 } else {
-                    self.add_token(super::token::TokenValue::EQUAL);
+                    self.add_token(token::TokenValue::EQUAL);
                 }
             },
             '>' => {
                 if self.next_byte() == '=' {
-                    self.add_token(super::token::TokenValue::GREATER_EQUAL);
+                    self.add_token(token::TokenValue::GREATER_EQUAL);
                 } else {
-                    self.add_token(super::token::TokenValue::GREATER);
+                    self.add_token(token::TokenValue::GREATER);
                 }
             },
             '<' => {
                 if self.next_byte() == '=' {
-                    self.add_token(super::token::TokenValue::LESS_EQUAL);
+                    self.add_token(token::TokenValue::LESS_EQUAL);
                 } else {
-                    self.add_token(super::token::TokenValue::LESS);
+                    self.add_token(token::TokenValue::LESS);
                 }
             },
             '\n' => self.line += 1,
@@ -86,8 +88,8 @@ impl Scanner {
         return self.curr as usize >= self.source.chars().count();
     }
 
-    fn add_token(&mut self, token: super::token::TokenValue) {
-        self.tokens.push(super::token::Token::new(token, self.line));
+    fn add_token(&mut self, token: token::TokenValue) {
+        self.tokens.push(token::Token::new(token, self.line));
     }
 
     fn next_byte(&self) -> char {

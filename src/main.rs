@@ -16,7 +16,7 @@ fn main() {
         return;
     }
 
-    let src: String = fs::read_to_string("test.syn")
+    let src: String = fs::read_to_string(&args[1])
         .expect("Error reading file");
 
     let mut scanner = utils::scanner::Scanner::new(src);
