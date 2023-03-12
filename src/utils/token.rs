@@ -8,7 +8,7 @@ pub enum TokenValue {
         EQUAL_EQUAL, LESS, GREATER,
 
         // Literals
-        NUMBER, STRING, IDENTIFIER,
+        INTEGER, FLOAT, STRING, IDENTIFIER,
     
         // Keywords
         AND, OR, IF, ELSE, WHILE, LET, CONST, TRUE, 

@@ -29,7 +29,6 @@ impl Scanner {
         while !self.is_at_end() {
             self.start = self.curr;
             self.scan_token();
-            self.next();
         }
 
         self.add_token(token::TokenValue::EOF);
@@ -37,6 +36,7 @@ impl Scanner {
 
     fn scan_token(&mut self) {
         let ch: char = self.source.as_bytes()[self.curr as usize] as char;
+        self.next();
         match ch {
             // Single char tokens
             '(' => self.add_token(token::TokenValue::LEFTPAREN),
@@ -81,7 +81,16 @@ impl Scanner {
             },
             '"' => self.add_string_token(),
             '\n' => self.line += 1,
-            '\t' | '\r' | ' ' | _ => {}
+            '\t' | '\r' | ' ' => {},
+
+            // Default case
+            _ => {
+                if ch.is_numeric() {
+                    self.add_number_token();
+                } else {
+                    // Throw unexpected character error
+                }
+            }
         };
     }
 
@@ -93,12 +102,16 @@ impl Scanner {
         self.curr += 1;
     }
 
+    fn curr_char(&self) -> char {
+        return self.source.as_bytes()[(self.curr - 1) as usize] as char;
+    }
+
     fn add_token(&mut self, token: token::TokenValue) {
         self.tokens.push(token::Token::new(token, self.line));
     }
 
     fn match_next_char(&mut self, next: char) -> bool {
-        if (self.source.as_bytes()[(self.curr + 1) as usize] as char) == next {
+        if (self.source.as_bytes()[(self.curr) as usize] as char) == next {
             self.next();
             return true;
         }
@@ -107,7 +120,7 @@ impl Scanner {
 
     fn peek(&self) -> char {
         if self.is_at_end() { return '\0'; }
-        return self.source.as_bytes()[(self.curr + 1) as usize] as char;
+        return self.source.as_bytes()[(self.curr) as usize] as char;
     }
 
     fn add_string_token(&mut self) {
@@ -115,11 +128,12 @@ impl Scanner {
 
         while self.peek() != '"' && !self.is_at_end() {
             if self.peek() == '\n' { self.line += 1; }
-            s.push(self.source.as_bytes()[(self.curr + 1) as usize] as char);
+            s.push(self.peek() as char);
             self.next();
         }
 
         if self.is_at_end() {
+            // Throw non terminated string error
             return;
         }
 
@@ -130,5 +144,47 @@ impl Scanner {
         let mut t = token::Token::new(token::TokenValue::STRING, self.line);
         t.set_str(s);
         self.tokens.push(t);
+    }
+
+    fn add_number_token(&mut self) {
+        let mut num: String = "".to_owned();
+
+        num.push(self.curr_char());
+        while self.peek().is_numeric() {
+            num.push(self.peek());
+            self.next();
+        }
+
+        // Number is a float
+        if self.peek() == '.' {
+            num.push('.');
+            self.next();
+            if self.peek().is_numeric() {
+                while self.peek().is_numeric() {
+                    num.push(self.peek());
+                    self.next();
+                }
+                let mut float_token = token::Token::new(token::TokenValue::FLOAT, self.line);
+                match num.parse::<f32>() {
+                    Ok(val) => {
+                        float_token.set_flt(val); 
+                        self.tokens.push(float_token);
+                    },
+                    Err(why) => println!("Error converting to float"),
+                }
+            } else {
+                // Throw bad float error
+            }
+            return;
+        }
+        
+        let mut int_token = token::Token::new(token::TokenValue::INTEGER, self.line);
+        match num.parse::<i32>() {
+            Ok(val) => {
+                int_token.set_int(val);
+                self.tokens.push(int_token);
+            },
+            Err(why) => println!("Error converting to int"),
+        }
     }
 }
