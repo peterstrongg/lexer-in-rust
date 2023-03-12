@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use std::clone::Clone;
 use super::token;
 
 pub struct Scanner {
@@ -5,7 +7,8 @@ pub struct Scanner {
     tokens: Vec<super::token::Token>,
     start: i32,
     curr: i32,
-    line: i32
+    line: i32,
+    reserved_words: HashMap<String, token::TokenValue>
 }
 
 impl Default for Scanner {
@@ -16,6 +19,18 @@ impl Default for Scanner {
             start: 0,
             curr: 0,
             line: 1,
+            reserved_words: HashMap::from([
+                ("and".to_owned(), token::TokenValue::AND),
+                ("or".to_owned(), token::TokenValue::OR),
+                ("if".to_owned(), token::TokenValue::IF),
+                ("else".to_owned(), token::TokenValue::ELSE),
+                ("while".to_owned(), token::TokenValue::WHILE),
+                ("let".to_owned(), token::TokenValue::LET),
+                ("const".to_owned(), token::TokenValue::CONST),
+                ("true".to_owned(), token::TokenValue::TRUE),
+                ("false".to_owned(), token::TokenValue::FALSE),
+                ("return".to_owned(), token::TokenValue::RETURN),
+            ]),
         }
     }
 }
@@ -87,6 +102,8 @@ impl Scanner {
             _ => {
                 if ch.is_numeric() {
                     self.add_number_token();
+                } else if ch.is_alphabetic() {
+                    self.add_identifier_token();
                 } else {
                     // Throw unexpected character error
                 }
@@ -186,5 +203,24 @@ impl Scanner {
             },
             Err(why) => println!("Error converting to int"),
         }
+    }
+
+    fn add_identifier_token(&mut self) {
+        let mut s: String = "".to_owned();
+
+        s.push(self.curr_char());
+        while self.peek().is_alphabetic() {
+            s.push(self.peek());
+            self.next();
+        }
+        
+        
+
+        // match self.reserved_words.get(&s) {
+        //     Some(val) => {
+        //         self.tokens.push(token::Token::new(val.take(), self.line));
+        //     },
+        //     None => println!("no")
+        // }
     }
 }
