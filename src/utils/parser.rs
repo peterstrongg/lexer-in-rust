@@ -50,5 +50,5 @@ impl Parser {
 
     fn primary(&self) -> expression::Expression {
         return expression::Expression::new();
-    }
+    } 
 }
