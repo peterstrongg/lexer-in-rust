@@ -4,7 +4,7 @@ use super::token;
 
 pub struct Scanner {
     source: String,
-    tokens: Vec<super::token::Token>,
+    pub tokens: Vec<token::Token>,
     start: i32,
     curr: i32,
     line: i32,
