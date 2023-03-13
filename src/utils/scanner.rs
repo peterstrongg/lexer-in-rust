@@ -7,7 +7,8 @@ pub struct Scanner {
     tokens: Vec<super::token::Token>,
     start: i32,
     curr: i32,
-    line: i32
+    line: i32,
+    test_map: HashMap<String, token::TokenValue>
 }
 
 impl Default for Scanner {
@@ -17,7 +18,19 @@ impl Default for Scanner {
             tokens: Vec::new(),
             start: 0,
             curr: 0,
-            line: 1
+            line: 1,
+            test_map: HashMap::from([
+                ("and".to_owned(), token::TokenValue::AND),
+                ("or".to_owned(), token::TokenValue::OR),
+                ("if".to_owned(), token::TokenValue::IF),
+                ("else".to_owned(), token::TokenValue::ELSE),
+                ("while".to_owned(), token::TokenValue::WHILE),
+                ("let".to_owned(), token::TokenValue::LET),
+                ("const".to_owned(), token::TokenValue::CONST),
+                ("true".to_owned(), token::TokenValue::TRUE),
+                ("false".to_owned(), token::TokenValue::FALSE),
+                ("return".to_owned(), token::TokenValue::RETURN),
+            ])
         }
     }
 }
@@ -201,20 +214,9 @@ impl Scanner {
             self.next();
         }
         
-        match s.as_str() {
-            "and" => self.add_token(token::TokenValue::AND),
-            "or" => self.add_token(token::TokenValue::OR),
-            "if" => self.add_token(token::TokenValue::IF),
-            "else" => self.add_token(token::TokenValue::ELSE),
-            "while" => self.add_token(token::TokenValue::WHILE),
-            "let" => self.add_token(token::TokenValue::LET),
-            "const" => self.add_token(token::TokenValue::CONST),
-            "true" => self.add_token(token::TokenValue::TRUE),
-            "false" => self.add_token(token::TokenValue::FALSE),
-            "return" => self.add_token(token::TokenValue::RETURN),
-            _ => {
-                self.tokens.push(token::Token::new(token::TokenValue::IDENTIFIER, self.line));
-            }
+        match self.test_map.get(&s) {
+            Some(val) => self.add_token(*val),
+            None => self.tokens.push(token::Token::new(token::TokenValue::IDENTIFIER, self.line))
         }
     }
 }

@@ -1,3 +1,4 @@
+#[derive(Copy, Clone)]
 pub enum TokenValue {
         // Single char tokens
         LEFTPAREN, RIGHTPAREN, LEFTCURLY, RIGHTCURLY,
