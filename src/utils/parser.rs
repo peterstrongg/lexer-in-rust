@@ -27,6 +27,9 @@ impl Parser {
     fn equality(&self) -> expression::Expression {
         let mut expr = self.comparison();
 
+        self.match_tokens(
+            &[token::TokenValue::NOT_EQUAL, token::TokenValue::EQUAL_EQUAL]
+        );
         
 
         return expr;
@@ -51,4 +54,20 @@ impl Parser {
     fn primary(&self) -> expression::Expression {
         return expression::Expression::new();
     } 
+
+    fn match_tokens(&self, args: &[token::TokenValue]) {
+
+    }
+
+    fn check(&self) {
+
+    }
+
+    fn peek(&self) -> token::Token {
+        return self.tokens[self.current as usize].clone();
+    }
+
+    fn next(&mut self) {
+        self.current += 1;
+    }
 }

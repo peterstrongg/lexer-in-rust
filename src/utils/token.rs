@@ -21,6 +21,7 @@ pub enum TokenValue {
         NIL
 }
 
+#[derive(Clone)]
 pub struct Token {
     token: TokenValue,
     line: i32,
