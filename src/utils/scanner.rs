@@ -40,7 +40,7 @@ impl Scanner {
         Scanner { source, ..Default::default() }
     }
 
-    pub fn scan_for_tokens(&mut self) {
+    pub fn scan(&mut self) {
         while !self.is_at_end() {
             self.start = self.curr;
             self.scan_token();

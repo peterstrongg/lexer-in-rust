@@ -20,9 +20,7 @@ fn main() {
         .expect("Error reading file");
 
     let mut scanner = utils::scanner::Scanner::new(src);
-    scanner.scan_for_tokens();
-
-    let mut parser = utils::parser::Parser::new(scanner.tokens);
+    scanner.scan();
 }
 
 fn repl() {   
