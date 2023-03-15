@@ -35,9 +35,9 @@ impl Default for Token {
         Token {
             token: TokenValue::NIL,
             line: 0,
-            literal_str: Default::default(),
-            literal_int: Default::default(),
-            literal_flt: Default::default(),
+            literal_str: None,
+            literal_int: None,
+            literal_flt: None,
         }
     }
 }

@@ -1,5 +1,6 @@
 use super::token;
 use super::expression;
+use utils::expression::Binary;
 
 pub struct Parser {
     tokens: Vec<token::Token>,
@@ -36,7 +37,12 @@ impl Parser {
     }
 
     fn comparison(&self) -> expression::Expression {
-        return self.term();
+        let mut expr: expression::Expression = self.term();
+
+        let right: expression::Expression = self.term();
+        expr = expression::Expression::binary(expr, token::Token::new(token::TokenValue::EOF, 0), right);
+
+        return expr;
     }
 
     fn term(&self) -> expression::Expression {

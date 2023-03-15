@@ -1,17 +1,17 @@
 use super::token;
 
 pub struct Expression {
-    operator: token::Token,
-    left: Box<Expression>,
-    right: Box<Expression>
+    operator: Option<token::Token>,
+    left: Option<Box<Expression>>,
+    right: Option<Box<Expression>>
 }
 
 impl Default for Expression {
     fn default() -> Expression {
         Expression {
-            operator: Default::default(),
-            left: Default::default(),
-            right: Default::default(),
+            operator: None,
+            left: None,
+            right: None,
         }
     }
 }
@@ -23,7 +23,7 @@ impl Expression {
 }
 
 pub trait Binary {
-    fn binary(&mut self, l:Expression, op:token::Token, r:Expression);
+    fn binary(l:Expression, op:token::Token, r:Expression) -> Self;
 }
 
 pub trait Unary {
@@ -31,16 +31,22 @@ pub trait Unary {
 }
 
 impl Binary for Expression {
-    fn binary(&mut self, l: Expression, op: token::Token, r: Expression) {
-        self.operator = op;
-        *self.left = l;
-        *self.right = r;
+    fn binary(l: Expression, op: token::Token, r: Expression) -> Self {
+        let mut e = Expression::new();
+        e.operator = Some(op);
+        e.left = Some(Box::new(l));
+        e.right = Some(Box::new(r));
+        return e;
+
+        // self.operator = Some(op);
+        // self.left = Some(Box::new(l));
+        // self.right = Some(Box::new(r));
     }
 }
 
 impl Unary for Expression {
     fn unary(&mut self, op: token::Token, r: Expression) {
-        self.operator = op;
-        *self.right = r
+        self.operator = Some(op);
+        self.right = Some(Box::new(r));
     }
 } 
