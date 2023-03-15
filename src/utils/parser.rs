@@ -21,59 +21,90 @@ impl Parser {
         Parser { tokens, ..Default::default() }
     }
 
-    fn expression(&self) -> expression::Expression {
+    fn expression(&mut self) -> expression::Expression {
         return self.equality();
     }
 
-    fn equality(&self) -> expression::Expression {
+    fn equality(&mut self) -> expression::Expression {
         let mut expr = self.comparison();
 
-        self.match_tokens(
-            &[token::TokenValue::NOT_EQUAL, token::TokenValue::EQUAL_EQUAL]
-        );
+        while self.match_tokens(&[
+            token::TokenValue::NOT_EQUAL, 
+            token::TokenValue::EQUAL_EQUAL]) {
+                let operator: token::Token = self.previous();
+                let right: expression::Expression = self.comparison();
+                expr = expression::Expression::binary(expr, operator, right); 
+        }
+        
+        return expr;
+    }
+
+    fn comparison(&mut self) -> expression::Expression {
+        let mut expr: expression::Expression = self.term();
+
+        while self.match_tokens(&[
+            token::TokenValue::GREATER, 
+            token::TokenValue::GREATER_EQUAL, 
+            token::TokenValue::LESS, 
+            token::TokenValue::LESS_EQUAL]) {
+                let operator: token::Token = self.previous();
+                let right: expression::Expression = self.term();
+                expr = expression::Expression::binary(expr, operator, right); 
+        }
         
 
         return expr;
     }
 
-    fn comparison(&self) -> expression::Expression {
-        let mut expr: expression::Expression = self.term();
-
-        let right: expression::Expression = self.term();
-        expr = expression::Expression::binary(expr, token::Token::new(token::TokenValue::EOF, 0), right);
-
-        return expr;
-    }
-
-    fn term(&self) -> expression::Expression {
+    fn term(&mut self) -> expression::Expression {
         return self.factor();
     }
 
-    fn factor(&self) -> expression::Expression {
+    fn factor(&mut self) -> expression::Expression {
         return self.unary();
     }
 
-    fn unary(&self) -> expression::Expression {
+    fn unary(&mut self) -> expression::Expression {
         return self.primary();
     }
 
-    fn primary(&self) -> expression::Expression {
+    fn primary(&mut self) -> expression::Expression {
         return expression::Expression::new();
     } 
 
-    fn match_tokens(&self, args: &[token::TokenValue]) {
-
+    fn match_tokens(&mut self, args: &[token::TokenValue]) -> bool {
+        for token in args.iter() {
+            if self.check(*token) {
+                self.next();
+                return true;
+            }
+        }
+        return false;
     }
 
-    fn check(&self) {
-
+    fn check(&self, tok: token::TokenValue) -> bool {
+        if self.is_at_end() { 
+            return false;
+        }
+        return self.peek().token == tok;
     }
 
     fn peek(&self) -> token::Token {
         return self.tokens[self.current as usize].clone();
     }
 
-    fn next(&mut self) {
-        self.current += 1;
+    fn next(&mut self) -> token::Token {
+        if !self.is_at_end() {
+            self.current += 1;
+        }
+        return self.previous();
+    }
+
+    fn previous(&self) -> token::Token {
+        return self.tokens[(self.current - 1) as usize].clone();
+    }
+
+    fn is_at_end(&self) -> bool {
+        return self.peek().token == token::TokenValue::EOF;
     }
 }

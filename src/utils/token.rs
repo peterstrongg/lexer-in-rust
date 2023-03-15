@@ -1,4 +1,5 @@
 #[derive(Copy, Clone)]
+#[derive(PartialEq)]
 pub enum TokenValue {
         // Single char tokens
         LEFTPAREN, RIGHTPAREN, LEFTCURLY, RIGHTCURLY,
@@ -23,7 +24,7 @@ pub enum TokenValue {
 
 #[derive(Clone)]
 pub struct Token {
-    token: TokenValue,
+    pub token: TokenValue,
     line: i32,
     literal_str: Option<String>,
     literal_int: Option<i32>,

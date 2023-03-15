@@ -33,9 +33,11 @@ pub trait Unary {
 impl Binary for Expression {
     fn binary(l: Expression, op: token::Token, r: Expression) -> Self {
         let mut e = Expression::new();
+
         e.operator = Some(op);
         e.left = Some(Box::new(l));
         e.right = Some(Box::new(r));
+        
         return e;
 
         // self.operator = Some(op);
