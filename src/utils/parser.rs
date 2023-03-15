@@ -27,31 +27,39 @@ impl Parser {
 
     fn equality(&mut self) -> expression::Expression {
         let mut expr = self.comparison();
-
-        while self.match_tokens(&[
-            token::TokenValue::NOT_EQUAL, 
-            token::TokenValue::EQUAL_EQUAL]) {
+        let tokens_to_check: [token::TokenValue; 2] = [
+            token::TokenValue::NOT_EQUAL,
+            token::TokenValue::EQUAL_EQUAL
+        ]; 
+        
+        for tok in tokens_to_check.iter() {
+            if self.match_tokens(*tok) {
                 let operator: token::Token = self.previous();
                 let right: expression::Expression = self.comparison();
                 expr = expression::Expression::binary(expr, operator, right); 
+            }
         }
-        
+
         return expr;
     }
 
     fn comparison(&mut self) -> expression::Expression {
         let mut expr: expression::Expression = self.term();
 
-        while self.match_tokens(&[
-            token::TokenValue::GREATER, 
+        let tokens_to_check: [token::TokenValue; 4] = [
+            token::TokenValue::GREATER,
             token::TokenValue::GREATER_EQUAL, 
             token::TokenValue::LESS, 
-            token::TokenValue::LESS_EQUAL]) {
+            token::TokenValue::LESS_EQUAL
+        ];
+
+        for tok in tokens_to_check.iter() {
+            if self.match_tokens(*tok) {
                 let operator: token::Token = self.previous();
-                let right: expression::Expression = self.term();
+                let right: expression::Expression = self.comparison();
                 expr = expression::Expression::binary(expr, operator, right); 
+            }
         }
-        
 
         return expr;
     }
@@ -72,12 +80,10 @@ impl Parser {
         return expression::Expression::new();
     } 
 
-    fn match_tokens(&mut self, args: &[token::TokenValue]) -> bool {
-        for token in args.iter() {
-            if self.check(*token) {
-                self.next();
-                return true;
-            }
+    fn match_tokens(&mut self, token: token::TokenValue) -> bool {
+        if self.check(token) {
+            self.next();
+            return true;
         }
         return false;
     }
